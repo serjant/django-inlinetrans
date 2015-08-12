@@ -13,10 +13,13 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this programe.  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf.urls.defaults import patterns, url
-
+try:
+    from django.conf.urls import include, patterns, url
+except ImportError:  # Django < 1.5
+    from django.conf.urls.defaults import include, patterns, ur
 
 urlpatterns = patterns('inlinetrans.views',
     url(r'^apply_changes/$', 'do_restart', name='apply_changes'),
     url(r'^set_new_translation/$', 'set_new_translation', name='set_new_translation'),
 )
+

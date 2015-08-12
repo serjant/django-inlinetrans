@@ -22,7 +22,10 @@ from django.core.management.commands import makemessages
 from django.http import HttpResponseBadRequest, HttpResponse, HttpResponseForbidden
 from django.template import RequestContext
 from django.shortcuts import render_to_response
-from django.utils import simplejson
+try:
+    from django.utils import simplejson
+except ImportError:
+    import json as simplejson
 from django.utils.encoding import smart_str
 from django.utils.translation import get_language, ugettext as _
 
@@ -76,16 +79,16 @@ def set_new_translation(request):
                 result['message'] = _('"%(msgid)s" not found in any catalog' % {'msgid': msgid})
                 if retry == 'false':
                     result['question'] = _('Do you want to update the catalog (this could take longer) and try again?')
-                return HttpResponse(simplejson.dumps(result), mimetype='text/plain')
+                return HttpResponse(simplejson.dumps(result), content_type='text/plain')
 
             format_errors = validate_format(selected_pofile)
             if format_errors:
                 result['message'] = format_errors
-                return HttpResponse(simplejson.dumps(result), mimetype='text/plain')
+                return HttpResponse(simplejson.dumps(result), content_type='text/plain')
 
             if poentry and not format_errors:
                 try:
-                    selected_pofile.metadata['Last-Translator'] = smart_str("%s %s <%s>" % (request.user.first_name, request.user.last_name, request.user.email))
+                    selected_pofile.metadata['Last-Translator'] = smart_str("%s" % (request.user.email or request.username))
                     selected_pofile.metadata['X-Translated-Using'] = smart_str("inlinetrans %s" % inlinetrans.get_version(False))
                     selected_pofile.metadata['PO-Revision-Date'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M%z')
                 except UnicodeDecodeError:
@@ -96,7 +99,7 @@ def set_new_translation(request):
                 result['message'] = _('Catalog updated successfully')
             elif not poentry:
                 result['message'] = _('PO entry not found')
-    return HttpResponse(simplejson.dumps(result), mimetype='text/plain')
+    return HttpResponse(simplejson.dumps(result), content_type='text/plain')
 
 
 def do_restart(request):

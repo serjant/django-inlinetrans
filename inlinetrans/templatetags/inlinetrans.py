@@ -22,9 +22,12 @@ from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 from django.template import TemplateSyntaxError, TokenParser, Node, Variable
 try:
-    from django.template.base import _render_value_in_context
-except ImportError:   # Django 1.1 fallback
-    from django.template import _render_value_in_context
+    from django.template.base import render_value_in_context as _render_value_in_context
+except ImportError:   # Django < 1.7 fallback
+    try:
+        from django.template.base import _render_value_in_context
+    except ImportError:   # Django 1.1 fallback
+        from django.template import _render_value_in_context
 
 from django.utils.translation import get_language
 from django.utils.translation.trans_real import catalog
