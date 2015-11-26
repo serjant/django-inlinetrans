@@ -20,7 +20,10 @@ from django import template
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
-from django.template import TemplateSyntaxError, TokenParser, Node, Variable
+try:
+    from django.template import TemplateSyntaxError, TokenParser, Node, Variable
+except ImportError:
+    from django.template.base import TemplateSyntaxError, TokenParser, Node, Variable
 try:
     from django.template.base import render_value_in_context as _render_value_in_context
 except ImportError:   # Django < 1.7 fallback
