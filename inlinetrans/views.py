@@ -18,7 +18,7 @@ import datetime
 import inlinetrans
 
 from django.conf import settings
-from django.core.management.commands import makemessages
+from django.core.management import call_command
 from django.http import HttpResponseBadRequest, HttpResponse, HttpResponseForbidden
 from django.template import RequestContext
 from django.shortcuts import render_to_response
@@ -60,7 +60,7 @@ def set_new_translation(request):
         if retry != 'false':
             root_path = os.path.dirname(os.path.normpath(os.sys.modules[settings.SETTINGS_MODULE].__file__))
             locale_path = os.path.dirname(os.path.normpath(os.sys.modules[settings.SETTINGS_MODULE].__file__))
-            makemessages(lang, extensions=['.html'], root_path=root_path, locale_path=locale_path)
+            call_command('makemessages', lang=lang, extensions=['.html'], root_path=root_path, locale_path=locale_path)
 
         pos = find_pos(lang, include_djangos=True)
         if pos:
