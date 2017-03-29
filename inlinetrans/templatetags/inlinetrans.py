@@ -18,7 +18,10 @@ import sys
 
 from django import template
 from django.conf import settings
-from django.core.urlresolvers import reverse
+try:
+    from django.urls import reverse
+except ImportError:  # Django < 1.10 fallback
+    from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 try:
     from django.template import TemplateSyntaxError, Node, Variable
@@ -283,8 +286,8 @@ def inlinetrans_toolbar(context, node_id):
         'INLINETRANS_STATIC_URL': get_static_url(),
         'INLINETRANS_MEDIA_URL': get_static_url(),  # backward compatible
         'request': context['request'],
-        'set_new_translation_url': reverse('inlinetrans.views.set_new_translation'),
-        'do_restart_url': reverse('inlinetrans.views.do_restart'),
+        'set_new_translation_url': reverse('set_new_translation'),
+        'do_restart_url': reverse('apply_changes'),
     }
     user = context.get('user', None)
     if user and get_user_can_translate(user):
