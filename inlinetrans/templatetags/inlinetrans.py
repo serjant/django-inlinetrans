@@ -19,9 +19,9 @@ import sys
 from django import template
 from django.conf import settings
 try:
-    from django.core.urlresolvers import reverse
-except ImportError:
     from django.urls import reverse
+except ImportError:  # Django < 1.10 fallback
+    from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 try:
     from django.template import TemplateSyntaxError, Node, Variable
