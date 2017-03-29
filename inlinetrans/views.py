@@ -36,15 +36,15 @@ from inlinetrans.settings import (get_auto_reload_method, get_auto_reload_log,
 
 
 def set_new_translation(request):
-    """
-    Post to include a new translation for a msgid
-    """
+    """Post to include a new translation for a msgid."""
     if not get_user_can_translate(request.user):
         return HttpResponseForbidden(_('You have no permission to update translation catalogs'))
     if not request.POST:
-        return HttpResponseBadRequest(render(request,
-                                      'inlinetrans/response.html',
-                                      {'message': _('Invalid request method')})
+        return HttpResponseBadRequest(
+            render(request,
+                   'inlinetrans/response.html',
+                   {'message': _('Invalid request method')})
+        )
     else:
         result = {'errors': True,
                   'question': False,
@@ -119,7 +119,7 @@ def do_restart(request):
         ## No RedHAT or similars
         elif reload_method == 'apache2':
             command = 'sudo apache2ctl restart'
-        ## RedHAT, CentOS
+        ## RedHAT, CentOS, Arch
         elif reload_method == 'httpd':
             command = 'sudo service httpd restart'
 
