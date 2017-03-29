@@ -20,8 +20,7 @@ import inlinetrans
 from django.conf import settings
 from django.core.management import call_command
 from django.http import HttpResponseBadRequest, HttpResponse, HttpResponseForbidden
-from django.template import RequestContext
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 try:
     from django.utils import simplejson
 except ImportError:
@@ -43,9 +42,9 @@ def set_new_translation(request):
     if not get_user_can_translate(request.user):
         return HttpResponseForbidden(_('You have no permission to update translation catalogs'))
     if not request.POST:
-        return HttpResponseBadRequest(render_to_response('inlinetrans/response.html',
-                                      {'message': _('Invalid request method')},
-                                      context_instance=RequestContext(request)))
+        return HttpResponseBadRequest(render(request,
+                                      'inlinetrans/response.html',
+                                      {'message': _('Invalid request method')})
     else:
         result = {'errors': True,
                   'question': False,
@@ -131,8 +130,6 @@ def do_restart(request):
         else:
             print('The AUTO_RELOAD_LOG directory do not exist')  # Just in case our stdout is logged somewhere
             os.system("sleep 2 && %s & " % command)
-        return render_to_response('inlinetrans/response.html',
-                                  {'message': reload_time},
-                                  context_instance=RequestContext(request))
+        return render(request, 'inlinetrans/response.html', {'message': reload_time})
 
 #    return HttpResponseRedirect(request.environ['HTTP_REFERER'])
